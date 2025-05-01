@@ -51,6 +51,7 @@ public class PanelHandler : MonoBehaviour
     }
 
     public void OpenGamneOverPanel() {
+        AudioHandler.instance.PlayAudio(3);
         gamePanel.SetActive(false);
         gameOverPanel.SetActive(true);
     }

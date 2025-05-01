@@ -51,10 +51,12 @@ public class CombinationHandler : MonoBehaviour
     private void CheckCombination() {
         if (firstClickValue == secondClickValue)
         {
+            AudioHandler.instance.PlayAudio(1);
             StartCoroutine(DelayDisableGameObjects());
             ScoreHandler.instance.MatchCounter();
         }
         else {
+            AudioHandler.instance.PlayAudio(2);
             onFlipBack();
             Invoke(nameof(ResetCurrentData), 0.2f);
         }

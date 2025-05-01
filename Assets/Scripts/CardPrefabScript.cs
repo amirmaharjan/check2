@@ -47,6 +47,7 @@ public class CardPrefabScript : MonoBehaviour
     }
 
     public void FlipCard() {
+        AudioHandler.instance.PlayAudio(0);
         toggle = !toggle;
 
         if (toggle)
