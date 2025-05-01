@@ -19,20 +19,23 @@ public class GridHandler : MonoBehaviour
 
     private List<CardSO> pairedCardList = new List<CardSO>();
 
-    private void Awake()
+    public static GridHandler instance;
+
+    private void OnEnable()
     {
-        if (cards.Count != 0) return;
-        foreach (Transform child in gridParent) {
+        foreach (Transform child in gridParent)
+        {
             cards.Add(child.gameObject);
         }
     }
 
-    void Start()
+    private void Awake()
     {
-        CreateGrid();
+        if (instance == null) instance = this;
+        else Destroy(this);
     }
 
-    public void CreateGrid()
+    public void CreateGrid(int rowValue, int columnValue)
     {
         if (cards == null || gridParent == null)
         {
@@ -40,6 +43,8 @@ public class GridHandler : MonoBehaviour
             return;
         }
 
+        rows = rowValue;
+        columns = columnValue;
         int totalCards = rows * columns;
 
         if (totalCards % 2 != 0)
@@ -86,8 +91,8 @@ public class GridHandler : MonoBehaviour
         }
 
 
-        float totalWidth = columns * cellSize.x + (columns - 1) * spacing.x;
-        float totalHeight = rows * cellSize.y + (rows - 1) * spacing.y;
+        float totalHeight = columns * cellSize.x + (columns - 1) * spacing.x;
+        float totalWidth = rows * cellSize.y + (rows - 1) * spacing.y;
         Vector2 origin = new Vector2(-totalWidth / 2f, totalHeight / 2f) + startOffset;
 
         int cardIndex = 0;
@@ -111,6 +116,8 @@ public class GridHandler : MonoBehaviour
                 cardIndex++;
             }
         }
+
+        ScoreHandler.instance.SetTotalScoreForRound(totalPairs);
     }
 
 
@@ -119,4 +126,8 @@ public class GridHandler : MonoBehaviour
         card.GetComponent<CardPrefabScript>().InitiualizeCard(cardSO);
     }
 
+    private void OnDisable()
+    {
+        cards.Clear();
+    }
 }
