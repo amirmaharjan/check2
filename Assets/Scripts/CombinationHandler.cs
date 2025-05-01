@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CombinationHandler : MonoBehaviour
@@ -31,8 +30,8 @@ public class CombinationHandler : MonoBehaviour
             Destroy(this);
     }
 
-
     public void OnClick(int value, GameObject go) {
+        ScoreHandler.instance.TurnCounter();
         if (!firstClick && !secondClick) {
             firstClick = true;
             firstClickValue = value;
@@ -53,7 +52,7 @@ public class CombinationHandler : MonoBehaviour
         if (firstClickValue == secondClickValue)
         {
             StartCoroutine(DelayDisableGameObjects());
-            //score add
+            ScoreHandler.instance.MatchCounter();
         }
         else {
             onFlipBack();

@@ -8,7 +8,6 @@ public class ClickHandler : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        Debug.Log(name + " Game Object Clicked!");
         cardPrefabScript.FlipCard();
     }
 }

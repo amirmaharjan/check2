@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -38,11 +37,11 @@ public class CardPrefabScript : MonoBehaviour
         cardName = cardSO.cardName;
 
         image.sprite = cardSprites[cardId];
-        //StartCoroutine(FlipCardAtInit());
+        StartCoroutine(FlipCardAtInit());
     }
 
     private IEnumerator FlipCardAtInit() {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         image.sprite = cardBackSide;
         clickHandler.enabled = true;
     }
