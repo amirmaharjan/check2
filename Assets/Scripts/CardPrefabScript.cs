@@ -27,6 +27,12 @@ public class CardPrefabScript : MonoBehaviour
     [SerializeField]
     private ClickHandler clickHandler;
 
+    private void OnEnable()
+    {
+        toggle = false;
+        CombinationHandler.onFlipBack += FlipCardBack;
+    }
+
     public void InitiualizeCard(CardSO cardSO) {
         cardId = cardSO.cardId;
         cardName = cardSO.cardName;
@@ -44,7 +50,26 @@ public class CardPrefabScript : MonoBehaviour
     public void FlipCard() {
         toggle = !toggle;
 
-        if(toggle) image.sprite = cardSprites[cardId];
+        if (toggle)
+        {
+            image.sprite = cardSprites[cardId];
+            clickHandler.enabled = false;
+            CombinationHandler.instance.OnClick(cardId, this.gameObject);
+        }
         else image.sprite = cardBackSide;
+    }
+
+    private void FlipCardBack() => StartCoroutine(DelayFlip());
+
+    private IEnumerator DelayFlip() {
+        yield return new WaitForSeconds(0.2f);
+        toggle = false;
+        image.sprite = cardBackSide;
+        clickHandler.enabled = true;
+    }
+
+    private void OnDisable()
+    {
+        CombinationHandler.onFlipBack -= FlipCardBack;
     }
 }
