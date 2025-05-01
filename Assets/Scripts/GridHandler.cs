@@ -4,18 +4,20 @@ using UnityEngine.UI;
 
 public class GridHandler : MonoBehaviour
 {
-    public List<GameObject> cards;         // Assign a UI Image prefab
-    public RectTransform gridParent;       // Parent panel to hold images
+    public List<GameObject> cards;
+    public RectTransform gridParent;
 
     public int rows = 2;
     public int columns = 2;
 
     public Vector2 cellSize = new Vector2(200, 200);
     public Vector2 spacing = new Vector2(10, 10);
-    public Vector2 startOffset = new Vector2(0, 0); // Optional offset from center
+    public Vector2 startOffset = new Vector2(0, 0);
 
     [SerializeField]
     public List<CardSO> cardSOs;
+
+    private List<CardSO> pairedCardList = new List<CardSO>();
 
     private void Awake()
     {
@@ -30,16 +32,62 @@ public class GridHandler : MonoBehaviour
         CreateGrid();
     }
 
-    public void CreateGrid() {
+    public void CreateGrid()
+    {
         if (cards == null || gridParent == null)
         {
             Debug.LogError("Image prefab or grid parent is not assigned.");
             return;
         }
 
+        int totalCards = rows * columns;
+
+        if (totalCards % 2 != 0)
+        {
+            Debug.LogError("Total number of cards must be even to form pairs.");
+            return;
+        }
+
+        pairedCardList.Clear();
+
+        // Fill pairedCardList with pairs
+        int totalPairs = totalCards / 2;
+
+        if (cardSOs.Count < 1)
+        {
+            Debug.LogError("Not enough cardSOs to create pairs.");
+            return;
+        }
+
+        List<CardSO> tempPool = new List<CardSO>(cardSOs);
+        pairedCardList.Clear();
+
+        for (int i = 0; i < totalPairs; i++)
+        {
+            // Refill the pool if needed
+            if (tempPool.Count == 0)
+            {
+                tempPool = new List<CardSO>(cardSOs);
+            }
+
+            // Pick a random cardSO from the temp pool
+            int randIndex = Random.Range(0, tempPool.Count);
+            CardSO selected = tempPool[randIndex];
+            tempPool.RemoveAt(randIndex);  // Prevent immediate reuse (unless pool resets)
+
+            pairedCardList.Add(selected);
+            pairedCardList.Add(selected);  // Add the pair
+        }
+
+        for (int i = 0; i < pairedCardList.Count; i++)
+        {
+            int rand = Random.Range(i, pairedCardList.Count);
+            (pairedCardList[i], pairedCardList[rand]) = (pairedCardList[rand], pairedCardList[i]);
+        }
+
+
         float totalWidth = columns * cellSize.x + (columns - 1) * spacing.x;
         float totalHeight = rows * cellSize.y + (rows - 1) * spacing.y;
-
         Vector2 origin = new Vector2(-totalWidth / 2f, totalHeight / 2f) + startOffset;
 
         int cardIndex = 0;
@@ -58,14 +106,17 @@ public class GridHandler : MonoBehaviour
                 Vector2 pos = origin + new Vector2(col * (cellSize.x + spacing.x), -row * (cellSize.y + spacing.y));
                 rt.anchoredPosition = pos;
 
-                cardIndex++;
                 imgObj.SetActive(true);
-                SetCardData(imgObj);
+                SetCardData(imgObj, pairedCardList[cardIndex]);
+                cardIndex++;
             }
         }
     }
 
-    public void SetCardData(GameObject card) {
-        card.GetComponent<CardPrefabScript>().InitiualizeCard(cardSOs[Random.Range(0,cardSOs.Count-1)]);
+
+    public void SetCardData(GameObject card, CardSO cardSO)
+    {
+        card.GetComponent<CardPrefabScript>().InitiualizeCard(cardSO);
     }
+
 }

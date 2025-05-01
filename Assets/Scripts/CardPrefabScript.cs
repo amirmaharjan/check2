@@ -32,7 +32,7 @@ public class CardPrefabScript : MonoBehaviour
         cardName = cardSO.cardName;
 
         image.sprite = cardSprites[cardId];
-        StartCoroutine(FlipCardAtInit());
+        //StartCoroutine(FlipCardAtInit());
     }
 
     private IEnumerator FlipCardAtInit() {
