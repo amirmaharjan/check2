@@ -14,6 +14,9 @@ public class GridHandler : MonoBehaviour
     public Vector2 spacing = new Vector2(10, 10);
     public Vector2 startOffset = new Vector2(0, 0); // Optional offset from center
 
+    [SerializeField]
+    public List<CardSO> cardSOs;
+
     private void Awake()
     {
         if (cards.Count != 0) return;
@@ -56,9 +59,13 @@ public class GridHandler : MonoBehaviour
                 rt.anchoredPosition = pos;
 
                 cardIndex++;
-
                 imgObj.SetActive(true);
+                SetCardData(imgObj);
             }
         }
+    }
+
+    public void SetCardData(GameObject card) {
+        card.GetComponent<CardPrefabScript>().InitiualizeCard(cardSOs[Random.Range(0,cardSOs.Count-1)]);
     }
 }
