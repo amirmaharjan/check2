@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GridHandler : MonoBehaviour
+public class GridHandler : MonoSingleton<GridHandler>
 {
     public List<GameObject> cards;
     public RectTransform gridParent;
@@ -19,20 +19,12 @@ public class GridHandler : MonoBehaviour
 
     private List<CardSO> pairedCardList = new List<CardSO>();
 
-    public static GridHandler instance;
-
     private void OnEnable()
     {
         foreach (Transform child in gridParent)
         {
             cards.Add(child.gameObject);
         }
-    }
-
-    private void Awake()
-    {
-        if (instance == null) instance = this;
-        else Destroy(this);
     }
 
     public void CreateGrid(int rowValue, int columnValue)
@@ -117,7 +109,7 @@ public class GridHandler : MonoBehaviour
             }
         }
 
-        ScoreHandler.instance.SetTotalScoreForRound(totalPairs);
+        ScoreHandler.Instance.SetTotalScoreForRound(totalPairs);
     }
 
 

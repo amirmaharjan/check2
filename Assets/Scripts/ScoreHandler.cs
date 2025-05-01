@@ -2,27 +2,24 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 
-public class ScoreHandler : MonoBehaviour
+public class ScoreHandler : MonoSingleton<ScoreHandler>
 {
     [SerializeField]
-    private int matches, turns, totalPairsForRound;
+    private int matches, turns, totalPairsForRound, totalScore;
 
     [SerializeField]
-    private TMP_Text matchesTxt, turnsTxt;
+    private TMP_Text matchesTxt, turnsTxt, totalScoreTxt;
 
-    public static ScoreHandler instance;
 
     private void OnEnable()
     {
         ResetAllCounters();
     }
 
-    private void Awake()
+    private void Start()
     {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(this);
+        totalScore = DataHandler.Instance.LoadData();
+        totalScoreTxt.text = totalScore.ToString();
     }
 
     public void MatchCounter()
@@ -30,15 +27,19 @@ public class ScoreHandler : MonoBehaviour
         matches++;
         matchesTxt.text = matches.ToString();
 
+        totalScore++;
+        totalScoreTxt.text = totalScore.ToString();
+
         if (matches == totalPairsForRound)
         {
+            DataHandler.Instance.SaveData(totalScore);
             StartCoroutine(DelayGameOverPanel());
         }
     }
 
     private IEnumerator DelayGameOverPanel() {
         yield return new WaitForSeconds(0.2f);
-        PanelHandler.instance.OpenGamneOverPanel();
+        PanelHandler.Instance.OpenGamneOverPanel();
         ResetAllCounters();
     }
 

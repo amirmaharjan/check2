@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class CombinationHandler : MonoBehaviour
+public class CombinationHandler : MonoSingleton<CombinationHandler>
 {
     [SerializeField]
     private bool firstClick, secondClick;
@@ -15,23 +15,14 @@ public class CombinationHandler : MonoBehaviour
     public delegate void FlipBackAction();
     public static event FlipBackAction onFlipBack;
 
-    public static CombinationHandler instance;
-
     private void OnEnable()
     {
         ResetCurrentData();
     }
 
-    private void Awake()
-    {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(this);
-    }
 
     public void OnClick(int value, GameObject go) {
-        ScoreHandler.instance.TurnCounter();
+        ScoreHandler.Instance.TurnCounter();
         if (!firstClick && !secondClick) {
             firstClick = true;
             firstClickValue = value;
@@ -51,12 +42,12 @@ public class CombinationHandler : MonoBehaviour
     private void CheckCombination() {
         if (firstClickValue == secondClickValue)
         {
-            AudioHandler.instance.PlayAudio(1);
+            AudioHandler.Instance.PlayAudio(1);
             StartCoroutine(DelayDisableGameObjects());
-            ScoreHandler.instance.MatchCounter();
+            ScoreHandler.Instance.MatchCounter();
         }
         else {
-            AudioHandler.instance.PlayAudio(2);
+            AudioHandler.Instance.PlayAudio(2);
             onFlipBack();
             Invoke(nameof(ResetCurrentData), 0.2f);
         }

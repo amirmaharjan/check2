@@ -47,14 +47,14 @@ public class CardPrefabScript : MonoBehaviour
     }
 
     public void FlipCard() {
-        AudioHandler.instance.PlayAudio(0);
+        AudioHandler.Instance.PlayAudio(0);
         toggle = !toggle;
 
         if (toggle)
         {
             image.sprite = cardSprites[cardId];
             clickHandler.enabled = false;
-            CombinationHandler.instance.OnClick(cardId, this.gameObject);
+            CombinationHandler.Instance.OnClick(cardId, this.gameObject);
         }
         else image.sprite = cardBackSide;
     }

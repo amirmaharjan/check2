@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class PanelHandler : MonoBehaviour
+public class PanelHandler : MonoSingleton<PanelHandler>
 {
     [SerializeField]
     private GameObject menuPanel, gamePanel, gameOverPanel;
@@ -11,16 +11,6 @@ public class PanelHandler : MonoBehaviour
 
     [SerializeField]
     private int difficultyIndex, rowValue, columnValue;
-
-    public static PanelHandler instance;
-
-    private void Awake()
-    {
-        if (instance == null)
-            instance = this;
-        else
-            Destroy(this);
-    }
 
     public void OnClickStartGame() {
         menuPanel.SetActive(false);
@@ -47,11 +37,11 @@ public class PanelHandler : MonoBehaviour
                 break;
         }
 
-        GridHandler.instance.CreateGrid(rowValue, columnValue);
+        GridHandler.Instance.CreateGrid(rowValue, columnValue);
     }
 
     public void OpenGamneOverPanel() {
-        AudioHandler.instance.PlayAudio(3);
+        AudioHandler.Instance.PlayAudio(3);
         gamePanel.SetActive(false);
         gameOverPanel.SetActive(true);
     }
